@@ -4,7 +4,6 @@ from healt_data import config
 
 
 def get_file_sha256(filepath):
-    """Menghitung hash SHA-256 dari file untuk akurasi FIM"""
     if not os.path.exists(filepath):
         return None
     try:
@@ -17,14 +16,12 @@ def get_file_sha256(filepath):
         return None
 
 
-# Simpan baseline hash SHA-256 saat aplikasi pertama kali dijalankan
 FIM_BASELINES = {
     path: get_file_sha256(path) for path in config.CONFIG["fim_files"]
 }
 
 
 def init_fim_baselines(fim_files=None):
-    """Menginisialisasi ulang baseline SHA-256 sesuai daftar file konfigurasi."""
     global FIM_BASELINES
     files = fim_files if fim_files is not None else config.CONFIG["fim_files"]
     FIM_BASELINES = {
@@ -34,7 +31,6 @@ def init_fim_baselines(fim_files=None):
 
 
 def check_file_integrity():
-    """Membandingkan hash SHA-256 saat ini dengan baseline saat startup"""
     modifications = []
     for path, baseline_hash in FIM_BASELINES.items():
         if baseline_hash is None:
