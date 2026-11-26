@@ -2,12 +2,9 @@ from pathlib import Path
 from datetime import datetime
 from healt_data import config
 
-# --- GLOBAL STATE TRACKING ---
 last_logged_alert = ""
 
-
 def log_alert_to_file(message: str) -> None:
-    """Menyimpan log peringatan kritis ke file eksternal (anti-spam duplikat beruntun)"""
     global last_logged_alert
     clean_msg = message.replace("[bold red]", "").replace("[/bold red]", "")
     clean_msg = clean_msg.replace("[bold yellow]", "").replace("[/bold yellow]", "")
