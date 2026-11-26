@@ -5,7 +5,6 @@ import psutil
 
 
 def get_uptime_str():
-    """Mendapatkan lama waktu sistem menyala"""
     try:
         boot_time = psutil.boot_time()
         uptime_seconds = int(time.time() - boot_time)
@@ -19,7 +18,6 @@ def get_uptime_str():
 
 
 def get_inodes_usage():
-    """Kalkulasi pemakaian Inode pada partisi root / (Linux/macOS)"""
     try:
         if hasattr(os, "statvfs"):
             st = os.statvfs('/')
