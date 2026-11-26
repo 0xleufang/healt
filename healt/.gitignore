@@ -1,0 +1,11 @@
+@"
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+*.zip
+security_alerts.log
+"@ | Out-File -FilePath .gitignore -Encoding utf8 -Append

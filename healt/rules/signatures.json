@@ -1,0 +1,84 @@
+{
+  "version": "1.1",
+  "ignore_paths": [
+    "tests/",
+    "test/",
+    "docs/",
+    "doc/",
+    "examples/",
+    "example/",
+    "samples/",
+    "fixtures/",
+    ".git/",
+    "__pycache__/",
+    "node_modules/",
+    "venv/",
+    ".venv/"
+  ],
+  "signatures": [
+    {
+      "id": "MALWARE-RANSOM-001",
+      "category": "malware_ransom",
+      "evidence_type": "TRUE_POSITIVE",
+      "severity": "HIGH",
+      "description": "Penghapusan backup, shadow copy, atau pemulihan sistem",
+      "pattern": "\\b(vssadmin\\s+delete|wbadmin\\s+delete|bcdedit.*recoveryenabled.*no|zfs\\s+destroy|btrfs\\s+subvolume\\s+delete)\\b"
+    },
+    {
+      "id": "MALWARE-EVADE-001",
+      "category": "malware_ransom",
+      "evidence_type": "TRUE_POSITIVE",
+      "severity": "HIGH",
+      "description": "Upaya mematikan atau membypass pertahanan keamanan sistem",
+      "pattern": "\\b(clickfix|disable_defender|kill_edr|taskkill.*defender|systemctl\\s+(stop|disable)\\s+(clamav|auditd|wazuh|fail2ban)|setenforce\\s+0|ufw\\s+disable)\\b"
+    },
+    {
+      "id": "EXEC-HIDDEN-001",
+      "category": "intentional_exec",
+      "evidence_type": "TRUE_POSITIVE",
+      "severity": "HIGH",
+      "description": "Kombinasi decode/unpack dengan exec/eval/compile untuk menyembunyikan eksekusi",
+      "pattern": "(b64decode|decompress|fromhex|marshal\\.loads)[\\s\\S]{0,400}(exec|eval|compile)"
+    },
+    {
+      "id": "EXEC-PIPE-001",
+      "category": "intentional_exec",
+      "evidence_type": "TRUE_POSITIVE",
+      "severity": "HIGH",
+      "description": "Eksekusi langsung hasil unduhan ke shell atau interpreter",
+      "pattern": "\\b(curl|wget|Invoke-WebRequest|iwr)\\b[^\\n|]*\\|\\s*(sh|bash|zsh|pwsh|powershell|osascript)\\b"
+    },
+    {
+      "id": "EXEC-HOOK-001",
+      "category": "intentional_exec",
+      "evidence_type": "TRUE_POSITIVE",
+      "severity": "MEDIUM",
+      "description": "Hook instalasi/build atau library preloading yang berpotensi jalan otomatis",
+      "pattern": "\\b(cmdclass|postinstall|preinstall|DYLD_INSERT_LIBRARIES|LD_PRELOAD)\\b"
+    },
+    {
+      "id": "EXEC-PERSIST-001",
+      "category": "intentional_exec",
+      "evidence_type": "CONTEXTUAL",
+      "severity": "LOW",
+      "description": "Referensi path startup, SSH, cron, atau service (cek apakah ada eksekusi otomatis)",
+      "pattern": "(~/\\.ssh|/\\.ssh|crontab|/etc/cron|systemctl\\s+enable|~/\\.bashrc|~/\\.zshrc|/etc/systemd/system/|/\\.config/autostart|LaunchAgents)"
+    },
+    {
+      "id": "DOWNLOAD-OP-001",
+      "category": "download_op",
+      "evidence_type": "CONTEXTUAL",
+      "severity": "LOW",
+      "description": "Aktivitas download atau pengambilan berkas jaringan (wajar tanpa eksekusi langsung)",
+      "pattern": "\\b(curl|wget|Invoke-WebRequest|iwr|urllib\\.request\\.urlretrieve|requests\\.get)\\b"
+    },
+    {
+      "id": "SAFE-RUNTIME-001",
+      "category": "safe_context",
+      "evidence_type": "CONTEXTUAL",
+      "severity": "LOW",
+      "description": "Eksekusi proses/CLI standar atau fungsi decode/kripto umum (konteks wajar)",
+      "pattern": "\\b(subprocess\\.(run|Popen|call)|os\\.system|zlib\\.decompress|base64\\.b64decode|Fernet|AES\\.new)\\b"
+    }
+  ]
+}

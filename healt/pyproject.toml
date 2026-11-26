@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "healt"
+version = "0.1.0"
+description = "Signature scan and sandbox guard before placing external repositories"
+requires-python = ">=3.9"
+dependencies = ["psutil", "rich"]
+
+[project.scripts]
+healt = "healt_data.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+healt_data = ["../rules/*.json"]

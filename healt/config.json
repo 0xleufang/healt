@@ -1,0 +1,31 @@
+{
+    "refresh_interval": 1.0,
+    "log_file": "security_alerts.log",
+    "monitored_services": [
+        "sshd",
+        "dockerd",
+        "nginx",
+        "cloudflared"
+    ],
+    "safe_ports": [],
+    "fim_files": [
+        "/etc/passwd",
+        "/etc/sudoers"
+    ],
+    "blacklist_keywords": [
+        "xmrig",
+        "cpuminer",
+        "meterpreter",
+        "rev_shell",
+        "keylogger",
+        "reverse_shell",
+        "backdoor",
+        "c2_agent",
+        "nc -e"
+    ],
+    "thresholds": {
+        "cpu_warn": 80.0,
+        "ram_warn": 80.0,
+        "disk_crit": 90.0
+    }
+}
