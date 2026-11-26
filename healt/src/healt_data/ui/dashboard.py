@@ -16,7 +16,7 @@ from healt_data.collectors.canary import check_canary_and_ransomware
 from healt_data.analys.health import calculate_dynamic_health
 
 AUTHOR_NAME = "leu_fang"
-YT_CHANNEL = config.CONFIG.get("yt_channel", "@leu_fang")
+YT_CHANNEL = config.CONFIG.get("yt_channel", "@wardijien_official")
 
 
 def _format_ports(open_ports, safe_ports):
@@ -73,9 +73,8 @@ def generate_dashboard():
         Layout(name="procs_services", ratio=1),
     )
 
-    # --- AUTHOR HEADER ---
     author_line = (
-        f"[bold cyan]SYS-SENTINEL v4.0[/bold cyan]  |  "
+        f"[bold cyan]Healt v1.0[/bold cyan]  |  "
         f"AUTHOR: [bold white]{AUTHOR_NAME}[/bold white]  |  "
         f"YOUTUBE: [bold red]{YT_CHANNEL}[/bold red]"
     )
@@ -86,7 +85,6 @@ def generate_dashboard():
         )
     )
 
-    # --- SYSTEM & APP HEADER ---
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     hostname = platform.node()
     os_info = f"{platform.system()} {platform.release()}"
@@ -102,7 +100,6 @@ def generate_dashboard():
         )
     )
 
-    # --- PANEL 01: SYSTEM HEALTH ---
     t_sys = Table(show_header=False, box=None, padding=(0, 1), expand=True)
     t_sys.add_column("Key", style="bold green", width=15, no_wrap=True)
     t_sys.add_column("Val", style="white", overflow="ellipsis")
@@ -129,7 +126,6 @@ def generate_dashboard():
         Panel(t_sys, title="[bold green][01] SYSTEM HEALTH[/bold green]", border_style="green")
     )
 
-    # --- PANEL 02: I/O, NETWORK & SECURITY GUARDS ---
     t_io = Table(show_header=False, box=None, padding=(0, 1), expand=True)
     t_io.add_column("Key", style="bold cyan", width=15, no_wrap=True)
     t_io.add_column("Val", style="white", overflow="ellipsis")
@@ -157,7 +153,6 @@ def generate_dashboard():
         Panel(t_io, title="[bold cyan][02] I/O & NETWORK[/bold cyan]", border_style="cyan")
     )
 
-    # --- PANEL 03: PROCESSES & MONITORED DAEMONS ---
     t_proc = Table(show_header=True, header_style="bold yellow", box=None, padding=(0, 1), expand=True)
     t_proc.add_column("PID", style="dim", width=6, no_wrap=True)
     t_proc.add_column("PROCESS", style="bold white", overflow="ellipsis")
@@ -192,7 +187,6 @@ def generate_dashboard():
         Panel(proc_service_layout, title="[bold yellow][03] WORKLOADS[/bold yellow]", border_style="yellow")
     )
 
-    # --- PANEL 04: HEALTH & THREAT INTERCEPTOR HUD ---
     threat_count = len(threats) if threats else 0
     log_path_str = str(config.CONFIG.get("log_file", "-"))
     if len(log_path_str) > 36:
