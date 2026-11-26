@@ -1,7 +1,6 @@
 import time
 import psutil
 
-# --- GLOBAL STATE TRACKING ---
 last_net_sent = 0
 last_net_recv = 0
 last_disk_read = 0
@@ -36,7 +35,6 @@ def get_network_and_disk_speed():
 
 
 def get_open_listening_ports():
-    """Mengambil daftar port TCP yang LISTEN dan menandai port di luar safe_ports"""
     ports = set()
     try:
         for conn in psutil.net_connections(kind='tcp'):
