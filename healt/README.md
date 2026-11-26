@@ -1,6 +1,16 @@
 <div align="center">
 
-# 🛡️ HEALT (`healt_v1`)
+<p align="center">
+  <img src="profile.png" alt="Tampilan Dashboard HEALT" width="800">
+</p>
+
+# HEALT (`v1.0`)
+
+<a href="https://git.io/typing-svg">
+  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=18&pause=1200&color=10B981&center=true&vCenter=true&repeat=true&width=640&lines=Host+Health+%26+Telemetry+Monitor;File+Integrity+(FIM)+%26+Canary+Trap;Process+%26+Network+Security+Scanner;Sandbox+%26+Rule-Based+Risk+Analysis" alt="Typing SVG">
+</a>
+
+<br>
 
 **Pantau kondisi host, cek keutuhan file, pasang jebakan canary, dan jalankan analisis keamanan langsung dari terminal.**
 
@@ -11,13 +21,13 @@
 
 *Dibuat biar ngecek kondisi sistem dan potensi aktivitas aneh di mesin nggak perlu buka banyak tools terpisah.*
 
-[Kenapa HEALT Hadir](#-kenapa-healt-hadir) • [Fitur & Alasannya](#-kenapa-setiap-fitur-hadir) • [Cara Install & Setup](#-alur-instalasi--setup) • [Cara Pakai](#-cara-pakai) • [Struktur](#-struktur-proyek)
+[Kenapa HEALT Hadir](#-kenapa-healt-hadir) • [Fitur & Alasannya](#-kenapa-setiap-fitur-hadir) • [Cara Install & Setup](#-alur-instalasi--setup) • [Cara Pakai per Fitur](#-cara-pakai-per-fitur-skenario-praktis) • [Struktur](#-struktur-proyek)
 
 </div>
 
 ---
 
-## 💡 Kenapa HEALT Hadir?
+## Kenapa HEALT Hadir?
 
 Saat ngoprek, ngetes aplikasi, atau ngawasin mesin sendiri, masalah paling umum itu **kurangnya visibilitas cepat**:
 * Tahu-tahu sistem melambat, tapi nggak langsung kelihatan proses atau koneksi mana yang bikin berat.
@@ -28,7 +38,7 @@ Saat ngoprek, ngetes aplikasi, atau ngawasin mesin sendiri, masalah paling umum 
 
 ---
 
-## 🧠 Kenapa Setiap Fitur Hadir?
+##  Kenapa Setiap Fitur Hadir?
 
 Berikut gambaran tiap modul di proyek ini—bukan cuma apa yang dikerjakan, tapi juga **kenapa fitur itu dibutuhkan**:
 
@@ -47,7 +57,7 @@ Berikut gambaran tiap modul di proyek ini—bukan cuma apa yang dikerjakan, tapi
 
 ---
 
-## ⚙️ Alur Instalasi & Setup
+##  Alur Instalasi & Setup
 
 Ikuti urutan ini biar lingkungan kerjamu bersih dan siap pakai:
 
@@ -60,14 +70,59 @@ Ikuti urutan ini biar lingkungan kerjamu bersih dan siap pakai:
 | **5. Jalankan setup via `app.py`** | `python app.py` | Menjalankan alur setup / inisialisasi awal yang disediakan lewat `app.py`. |
 | **6. Cek konfigurasi** | `Copy-Item config.example.json config.json -ErrorAction SilentlyContinue` | Pastikan `config.json` tersedia dan sesuaikan isinya sesuai kebutuhanmu. |
 
-> 💡 **Tips:** Kalau di langkah `python app.py` ada menu atau opsi setup interaktif (seperti bikin config, cek folder, atau inisialisasi awal), ikuti saja prompt yang muncul di terminal.
+>  **Tips:** Kalau di langkah `python app.py` ada menu atau opsi setup interaktif (seperti bikin config, cek folder, atau inisialisasi awal), ikuti saja prompt yang muncul di terminal.
 
 ---
 
-## 🚀 Cara Pakai
+##  Cara Pakai per Fitur (Skenario Praktis)
 
-Setelah proses install dan setup beres, kamu bisa mulai dari pengecekan dasar ini:
+ **Catatan:** Sesuaikan nama subcommand atau flag di bawah ini dengan argumen persis yang terdaftar di `src/healt_data/cli.py` atau `app.py` (cek daftar lengkapnya lewat `healt --help`).
 
-1. **Cek bantuan & perintah CLI**
-   ```bash
-   healt --help
+### 1. Cek Bantuan & Mode Dasar CLI
+Mulai dari sini buat lihat daftar perintah, opsi, dan status dasar aplikasi:
+
+```bash
+healt --help
+python app.py
+
+# Cek status jebakan canary
+healt canary --status
+
+# Pantau pemicu akses pada file canary
+healt canary --watch
+
+# Jalankan analisis kesehatan berdasarkan rules/signatures.json
+healt analyze --rules rules/signatures.json
+
+# Jalankan evaluasi di mode sandbox
+healt {repo_github}
+
+# Mode brutal
+healt {repo_github} --force
+
+# scan folder 
+healt --scan-dir path/
+```
+## Author
+
+<div align="center">
+
+<a href="https://git.io/typing-svg">
+  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=15&pause=1200&color=38BDF8&center=true&vCenter=true&repeat=true&width=460&lines=Created+by+leufang+%2F+0xleufang;YouTube+%40wardijien_official" alt="Author Typing SVG">
+</a>
+
+<br>
+
+[![GitHub](https://img.shields.io/badge/GitHub-0xleufang-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/0xleufang)
+[![YouTube](https://img.shields.io/badge/YouTube-wardijien__official-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@wardijien_official)
+
+<br>
+
+| Keterangan | Detail |
+| :--- | :--- |
+| **Username** | `leufang` |
+| **GitHub** | [@0xleufang](https://github.com/0xleufang) |
+| **YouTube Channel** | [@wardijien_official](https://www.youtube.com/@wardijien_official149) |
+| **Lisensi** | [LICENSE](LICENSE) |
+
+</div>
