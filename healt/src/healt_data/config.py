@@ -9,7 +9,6 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG_PATH = str(PROJECT_ROOT / "config.json")
 DEFAULT_LOG_PATH = str(PROJECT_ROOT / "security_alerts.log")
 
-# --- KONFIGURASI DEFAULT (Akan dibuat otomatis ke config.json jika belum ada) ---
 DEFAULT_CONFIG = {
     "refresh_interval": 1.0,
     "log_file": DEFAULT_LOG_PATH,
