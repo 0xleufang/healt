@@ -4,11 +4,7 @@ from healt_data import config
 
 
 def collect_process_telemetry():
-    """
-    SINGLE-PASS TELEMETRY:
-    Mengambil seluruh proses 1 kali per siklus untuk efisiensi CPU maksimal.
-    Menghasilkan: (top_processes, active_service_names, detected_threats)
-    """
+
     all_procs = []
     detected_threats = []
     running_names = set()
@@ -27,7 +23,6 @@ def collect_process_telemetry():
             running_names.add(name_lower)
             all_procs.append(pinfo)
 
-            # Abaikan proses kernel dan skrip monitor ini sendiri
             if (
                 name_lower.startswith(kernel_whitelist)
                 or current_script in cmdline_str
@@ -43,7 +38,6 @@ def collect_process_telemetry():
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
 
-    # Urutkan Top 4 proses berdasarkan pemakaian CPU
     top_procs = sorted(
         all_procs,
         key=lambda x: x['cpu_percent'] or 0.0,
