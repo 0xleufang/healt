@@ -371,7 +371,6 @@ def _shorten_path(path_str: str, max_len: int = 34) -> str:
 
 
 def _find_match_line_and_snippet(content: str, pattern: Optional[re.Pattern]) -> Tuple[int, str]:
-    """Mengambil nomor baris dan cuplikan singkat untuk meningkatkan akurasi bukti temuan."""
     if not content:
         return (0, "")
     lines = content.splitlines()
@@ -413,7 +412,6 @@ def _bucket_badge(bucket: str) -> str:
 
 
 def _shannon_entropy(data: bytes) -> float:
-    """Menghitung Shannon entropy (0.0 - 8.0) untuk mendeteksi data terenkripsi/acak."""
     if not data:
         return 0.0
     freq = [0] * 256
@@ -429,7 +427,6 @@ def _shannon_entropy(data: bytes) -> float:
 
 
 def _has_shebang(fpath: Path) -> bool:
-    """Mengecek apakah file diawali shebang (#!)."""
     try:
         with fpath.open("rb") as fh:
             return fh.read(2) == b"#!"
@@ -438,7 +435,6 @@ def _has_shebang(fpath: Path) -> bool:
 
 
 def _has_real_shell_payload_in_image(raw_bytes: bytes) -> bool:
-    """Cek ketat apakah gambar benar-benar memuat shebang/perintah shell yang terbaca, bukan byte kompresi acak."""
     if not raw_bytes:
         return False
     chunks = [raw_bytes[:256], raw_bytes[-1024:]]
@@ -461,7 +457,6 @@ def _has_real_shell_payload_in_image(raw_bytes: bytes) -> bool:
 
 
 def _inspect_code_obj_names(obj: Any, depth: int = 0) -> List[str]:
-    """Menelusuri objek hasil marshal.loads secara aman tanpa mengeksekusinya."""
     if depth > 4 or obj is None:
         return []
     hits: List[str] = []
@@ -493,7 +488,6 @@ def _inspect_code_obj_names(obj: Any, depth: int = 0) -> List[str]:
 
 
 def _unpack_and_inspect_blob(raw: bytes, depth: int = 0) -> Optional[str]:
-    """Membongkar lapisan base64/hex/zlib/bz2/lzma/marshal secara aman tanpa exec."""
     if depth > 4 or not raw:
         return None
 
@@ -546,7 +540,6 @@ def _unpack_and_inspect_blob(raw: bytes, depth: int = 0) -> Optional[str]:
 
 
 def _scan_packed_payloads(content: str) -> List[Tuple[str, str, str, str]]:
-    """Membongkar string Base64/Hex yang mengandung payload/code object tersembunyi (TRUE_POSITIVE)."""
     results: List[Tuple[str, str, str, str]] = []
 
     b64_candidates = re.findall(r"[A-Za-z0-9+/=]{96,}", content)
@@ -578,7 +571,6 @@ def _scan_packed_payloads(content: str) -> List[Tuple[str, str, str, str]]:
 
 
 def _scan_ast_evasion(content: str) -> List[Tuple[str, str, str, str]]:
-    """Mendeteksi kombinasi decode+exec (TRUE_POSITIVE) vs pemanggilan normal (CONTEXTUAL)."""
     try:
         tree = ast.parse(content)
     except SyntaxError:
@@ -623,7 +615,6 @@ def _scan_ast_evasion(content: str) -> List[Tuple[str, str, str, str]]:
 
 
 def _scan_symlink_escapes(workspace_dir: Path, ignore_paths: List[str]) -> List[Dict[str, Any]]:
-    """Mendeteksi symlink di dalam workspace yang mengarah keluar batas direktori kerja (TP)."""
     results: List[Dict[str, Any]] = []
     root_resolved = workspace_dir.resolve()
     for root, dirs, files in os.walk(workspace_dir, followlinks=False):
@@ -663,7 +654,6 @@ def _scan_symlink_escapes(workspace_dir: Path, ignore_paths: List[str]) -> List[
 
 
 def _inspect_archive_file(fpath: Path, rel_path_str: str, in_ignored: bool) -> Optional[Dict[str, Any]]:
-    """Memeriksa arsip (.zip/.tar.*) secara aman untuk mendeteksi zip bomb, symlink escape, atau traversal."""
     try:
         comp_size = fpath.stat().st_size
     except OSError:
@@ -833,7 +823,6 @@ def record_scan_history(
     findings: List[Dict[str, Any]],
     history_path: Optional[Path] = None,
 ) -> Path:
-    """Menyimpan ringkasan hasil pindai ke JSONL untuk transparansi dan audit lokal."""
     log_file = history_path or (Path.home() / ".healt" / "scan_history.jsonl")
     log_file.parent.mkdir(parents=True, exist_ok=True)
     record = {
@@ -851,7 +840,6 @@ def record_scan_history(
 
 
 def _has_bypass_evasion(content: str, ext: str) -> bool:
-    """Mendeteksi bypass/deserialisasi berbahaya dengan memfilter $IFS biasa di skrip shell."""
     if _UNSAFE_YAML_LOAD_PATTERN.search(content):
         return True
     if re.search(
@@ -872,7 +860,6 @@ def _has_bypass_evasion(content: str, ext: str) -> bool:
 
 
 def _classify_evidence(rule_id: str, severity: str, is_doc_file: bool) -> Tuple[str, str]:
-    """Membedakan temuan TRUE_POSITIVE nyata vs CONTEXTUAL (konteks wajar / FP potensial)."""
     if is_doc_file:
         return ("CONTEXTUAL", "LOW")
     if rule_id in TRUE_POSITIVE_RULE_IDS:
@@ -881,7 +868,6 @@ def _classify_evidence(rule_id: str, severity: str, is_doc_file: bool) -> Tuple[
 
 
 def calculate_security_rate(findings: List[Dict[str, Any]]) -> Dict[str, Any]:
-    """Menghitung security rate (0-100%) dengan fokus pada ancaman nyata (TRUE_POSITIVE)."""
     core_risk = [f for f in findings if f["bucket"] == "CORE_RISK"]
     tool_op = [f for f in findings if f["bucket"] == "TOOL_OP"]
     test_doc = [f for f in findings if f["bucket"] == "TEST_DOC"]
@@ -932,12 +918,10 @@ def calculate_security_rate(findings: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 
 def get_project_root() -> Path:
-    """Mengembalikan root folder proyek healt (src/healt_data/sandbox.py -> ../..)."""
     return Path(__file__).resolve().parents[2]
 
 
 def resolve_default_dest(explicit_dest: Optional[str] = None) -> Path:
-    """Menentukan folder tujuan peletakan repo yang rapi dan menghindari mengotori folder healt."""
     if explicit_dest:
         return Path(explicit_dest).expanduser().resolve()
     cwd = Path.cwd().resolve()
@@ -950,7 +934,6 @@ def resolve_default_dest(explicit_dest: Optional[str] = None) -> Path:
 
 
 def load_signature_rules(rules_path: Optional[Path] = None) -> Dict[str, Any]:
-    """Memuat aturan signature dan ignore_paths dari rules/signatures.json."""
     target = rules_path or (get_project_root() / "rules" / "signatures.json")
     if not target.exists():
         return {"ignore_paths": DEFAULT_IGNORE_PATHS, "signatures": DEFAULT_SIGNATURES}
@@ -974,7 +957,6 @@ def load_signature_rules(rules_path: Optional[Path] = None) -> Dict[str, Any]:
 
 
 def is_ignored_path(rel_path_str: str, ignore_paths: List[str]) -> bool:
-    """Mengecek apakah path berada di folder pengecualian umum seperti tests/ atau docs/."""
     normalized = rel_path_str.replace("\\", "/").lstrip("./")
     parts = normalized.split("/")
     for prefix in ignore_paths:
@@ -987,7 +969,6 @@ def is_ignored_path(rel_path_str: str, ignore_paths: List[str]) -> bool:
 
 
 def normalize_repo_url(raw_url: str) -> str:
-    """Menormalkan input 'github.com/user/repo' menjadi 'https://github.com/user/repo.git'."""
     cleaned = raw_url.strip()
     if cleaned.startswith(("https://", "http://", "git@", "ssh://")):
         return cleaned
@@ -998,7 +979,6 @@ def normalize_repo_url(raw_url: str) -> str:
 
 
 def detect_engine(preferred: str = "auto") -> Optional[str]:
-    """Mendeteksi engine container yang tersedia (podman atau docker), atau None jika belum terpasang."""
     if preferred != "auto":
         if shutil.which(preferred):
             return preferred
@@ -1010,7 +990,6 @@ def detect_engine(preferred: str = "auto") -> Optional[str]:
 
 
 def sanitize_repo_name(repo_url: str) -> str:
-    """Mengambil nama folder repo yang aman dari URL Git."""
     name = repo_url.rstrip("/").split("/")[-1]
     if name.endswith(".git"):
         name = name[:-4]
@@ -1019,7 +998,6 @@ def sanitize_repo_name(repo_url: str) -> str:
 
 
 def ensure_sandbox_image(engine: str, base_image: str, sandbox_image: str = DEFAULT_SANDBOX_IMAGE) -> str:
-    """Memastikan image sandbox memiliki git & ca-certificates terinstal."""
     check = subprocess.run(
         [engine, "image", "exists", sandbox_image],
         stdout=subprocess.DEVNULL,
@@ -1064,7 +1042,6 @@ def build_hardened_base_cmd(
     network_mode: Optional[str] = None,
     interactive: bool = False,
 ) -> List[str]:
-    """Menyusun argumen dasar container dengan hardening."""
     cmd = [
         engine,
         "run",
@@ -1094,7 +1071,6 @@ def run_cmd(cmd: List[str], check: bool = True) -> subprocess.CompletedProcess:
 
 
 def scan_workspace_structured(workspace_dir: Path, rules_path: Optional[Path] = None) -> List[Dict[str, Any]]:
-    """Memindai file demi file di lokasi mana pun, memisahkan ancaman nyata (TP) vs konteks (CTX)."""
     rules_cfg = load_signature_rules(rules_path)
     ignore_paths: List[str] = rules_cfg["ignore_paths"]
     raw_sigs: List[Dict[str, str]] = rules_cfg["signatures"]
@@ -1436,13 +1412,11 @@ def _format_siem_finding_line(item: Dict[str, Any]) -> str:
 
 
 def scan_workspace_for_red_flags(workspace_dir: Path, rules_path: Optional[Path] = None) -> List[str]:
-    """Mengembalikan daftar baris temuan signature ringkas."""
     structured = scan_workspace_structured(workspace_dir, rules_path)
     return [_format_siem_finding_line(item) for item in structured]
 
 
 def print_siem_banner(engine: Optional[str], repo_url: str, target_dest: Path) -> None:
-    """Header bergaya CLI security tool: simpel, tajam, tanpa kotak berlebih."""
     eng_label = engine or "static-only"
     eng_col = _color(eng_label, "1;36") if engine else _color(eng_label, "33")
     print(_color(_HEALT_BANNER.rstrip("\n"), "1;36"))
@@ -1454,7 +1428,6 @@ def print_siem_banner(engine: Optional[str], repo_url: str, target_dest: Path) -
 
 
 def print_siem_scan_report(findings: List[Dict[str, Any]], rate_info: Dict[str, Any]) -> None:
-    """Menampilkan hasil signature scan ala CLI security tool."""
     score = rate_info["score"]
     verdict = rate_info["verdict"]
     verdict_label = rate_info["verdict_label"]
@@ -1498,7 +1471,6 @@ def print_siem_scan_report(findings: List[Dict[str, Any]], rate_info: Dict[str, 
 
 
 def promote_to_host(source_dir: Path, dest_parent: Path, repo_name: str, force: bool = False) -> Path:
-    """Menyalin repo langsung ke folder tujuan aktif di sistem host tanpa subfolder tambahan."""
     dest_parent.mkdir(parents=True, exist_ok=True)
     target_path = dest_parent / repo_name
     if target_path.exists():
@@ -1522,7 +1494,6 @@ def run_sandbox_workflow(
     cpus: str = "1.0",
     pids_limit: int = 128,
 ) -> int:
-    """Menjalankan static scan + gate keamanan + sandbox container (jika tersedia) + konfirmasi peletakan."""
     repo_url = normalize_repo_url(raw_repo_url)
     target_dest = resolve_default_dest(dest)
     temp_extract_dir = Path(f"/tmp/healt_sandbox_extract_{os.getpid()}")
