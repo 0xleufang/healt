@@ -51,7 +51,6 @@ def _ensure_canary_files(create_missing: bool = True):
 
 
 def _scan_dir_files(directory: Path, max_files: int = 2000):
-    """Mengambil snapshot (mtime_ns, size) file di direktori untuk deteksi perubahan/penghapusan massal."""
     snap = {}
     count = 0
     try:
@@ -73,7 +72,6 @@ def _scan_dir_files(directory: Path, max_files: int = 2000):
 
 
 def init_canary_state():
-    """Menginisialisasi baseline canary file dan snapshot direktori awal."""
     global _CANARY_INITIALIZED, _DIR_SNAPSHOTS
     _ensure_canary_files(create_missing=True)
     new_snaps = {}
@@ -86,12 +84,6 @@ def init_canary_state():
 
 
 def check_canary_and_ransomware():
-    """
-    Memeriksa:
-    1. Apakah canary file hilang atau berubah hash SHA-256.
-    2. Apakah terjadi lonjakan modifikasi/penghapusan file (burst) dalam jendela waktu singkat.
-    Mengembalikan dict: {"canary_triggered": list[str], "ransomware_burst": bool, "burst_events": int}
-    """
     global _CANARY_INITIALIZED, _DIR_SNAPSHOTS
     if not _CANARY_INITIALIZED:
         init_canary_state()
@@ -109,7 +101,6 @@ def check_canary_and_ransomware():
         elif expected_hash and current_hash and current_hash != expected_hash:
             canary_triggered.append(f"MODIFIED:{cpath.name}")
 
-    # Hitung perubahan/penghapusan file pada direktori yang dipantau
     events_this_tick = 0
     for d in config.CONFIG.get("canary_watch_dirs", []):
         dp = Path(os.path.expanduser(str(d)))
@@ -119,7 +110,6 @@ def check_canary_and_ransomware():
         prev_snap = _DIR_SNAPSHOTS.get(dkey, {})
         curr_snap = _scan_dir_files(dp)
 
-        # File yang dihapus atau berubah (mtime / ukuran)
         for fpath_str, old_meta in prev_snap.items():
             if fpath_str not in curr_snap:
                 events_this_tick += 1
